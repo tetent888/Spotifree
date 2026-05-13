@@ -26,12 +26,13 @@ smart-music-playlist-manager/
 │   ├── queue.c         # Play queue (next song)          [Person 1]
 │   ├── stack.c         # History stack (previous song)   [Person 1]
 │   ├── hash.c          # Hash table for search           [Person 1]
-│   ├── api.c           # iTunes API / CSV loader         [Person 2]
+│   ├── csv.c           # iTunes API / CSV loader         [Person 2]
 │   └── recommend.c     # Recommendation algorithm        [Person 2]
 ├── include/
 │   ├── song.h
 │   ├── playlist.h
-│   ├── api.h
+│   ├── csv.h
+│   ├── recommend.h
 │   └── hash.h
 ├── data/
 │   └── cache.csv       # Local song cache
@@ -149,22 +150,57 @@ make stub
 ## 🏗️ System Flow
 
 ```
+Program starts
+        ↓
+Load songs from data/songs.csv
+        ↓
+Store song data into Song struct
+        ↓
+Insert songs into playlist / linked list / hash table
+        ↓
+Show main menu
+        ↓
+User selects an action
+        ↓
+Possible actions:
+    - Add song
+    - Delete song
+    - Search song
+    - Add song to playlist
+    - Add song to queue
+    - Play next song
+    - Show history
+    - Show recommendations
+        ↓
+Save updated data to CSV files
+        ↓
+Exit program
+
+```
+
+## 🏗️ Detailed System Flow
+
+```
 User searches "Taylor Swift"
         ↓
-Call iTunes API  (api.c)
+Read data from songs.csv
         ↓
-Parse JSON → Song struct  (song.c)
+Load each row into Song struct
         ↓
-Insert into linked list + hash table  (playlist.c / hash.c)
+Search by title / artist / genre
         ↓
-User adds to playlist / queue / history
+Display matching songs
         ↓
-Play Next →  Shuffle ON?
-             ├── YES → random song  (rand())
-             └── NO  → pull from queue  (queue.c)
+User selects a song
         ↓
-Recommend based on most-played genre or artist  (recommend.c)
-```
+Add song to playlist / queue / history
+        ↓
+Save updated data to CSV
+        ↓
+Recommendation system checks history or playlist
+        ↓
+Recommend songs with similar artist or genre
+
 
 ---
 
@@ -172,8 +208,8 @@ Recommend based on most-played genre or artist  (recommend.c)
 
 | Person | Responsibility | Files |
 |--------|---------------|-------|
-| Person 1 | Data Structure Core | song.c, playlist.c, queue.c, stack.c, hash.c |
-| Person 2 | System Logic + API | api.c, recommend.c, cache.csv |
+| Person 1 | Data Structure Core | playlist.c, queue.c, stack.c, hash.c |
+| Person 2 | System Logic + API | csv.c, song.c, recommend.c, cache.csv |
 | Person 3 | UI + Control + Integration | main.c, Makefile, README.md |
 
 ---
