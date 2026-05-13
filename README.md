@@ -2,16 +2,43 @@
 
 A lightweight, terminal-based music playlist manager written in C — inspired by Spotify but running entirely in your command line.
 
+This project does not use an external music API. Instead, it stores and loads song data from local CSV files, making it easier to manage, test, and understand for a C programming project.
+
 ---
 
 ## 📋 Features
 
-- **Add / Delete Songs** — manage your playlist with a linked list
-- **Play Next / Previous** — queue and history powered by queue & stack data structures
-- **Shuffle Mode** — toggle shuffle on/off; when ON plays random song, when OFF pulls from queue in order
-- **Search Songs** — fast lookup using a hash table
-- **Recommendations** — suggests songs based on your most-played genre or artist
-- **iTunes API Integration** — fetch real song data or load from local CSV cache
+- **Add Songs** — add new songs into the local music database
+- **Delete Songs** — remove songs from the music library or playlist
+- **Show All Songs** — display all songs stored in the CSV database
+- **Search Songs** — search songs by title, artist, or genre
+- **Playlist Management** — manage user playlist using linked list logic
+- **Play Queue** — store upcoming songs using queue data structure
+- **Listening History** — keep track of played songs using stack/history logic
+- **Shuffle Mode** — toggle shuffle on/off
+- **Recommendations** — suggest songs based on recent history, artist, or genre
+- **CSV Data Storage** — load and save song, playlist, and history data using local CSV files
+
+---
+
+## 🎯 Project Goal
+
+The goal of this project is to create a small music playlist management system using C programming and data structures.
+
+Instead of focusing on real music streaming, this project focuses on how data is stored, searched, played, queued, and recommended inside a terminal-based program.
+
+This project demonstrates:
+
+- File handling in C
+- Struct usage
+- Array of structs
+- Linked list
+- Queue
+- Stack
+- Hash table
+- CSV file reading and writing
+- Basic recommendation logic
+- Modular programming using multiple `.c` and `.h` files
 
 ---
 
