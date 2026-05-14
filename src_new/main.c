@@ -10,7 +10,7 @@
 #include "queue.h"
 #include "stack.h"
 
-#define CSV_FILE "songs.csv"
+#define CSV_FILE "data/songs.csv"
 #define MAX_SONGS 500
 
 static void freeSongCopy(Song *song) {
