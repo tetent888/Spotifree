@@ -47,7 +47,7 @@ smart-music-playlist-manager/
 ├── src_new/
 │   ├── main.c          # UI, menu loop, program control  [Pea]
 │   ├── song.c          # Song struct definition          [Oak]
-│   ├── playlist.c      # Linked list playlist            [Oak]
+│   ├── playlist.c      # Linked list playlist            [Oak+Code]
 │   ├── queue.c         # Play queue (next song)          [Oak]
 │   ├── stack.c         # History stack (previous song)   [Oak]
 │   ├── csv.c           # iTunes API / CSV loader         [Code]
