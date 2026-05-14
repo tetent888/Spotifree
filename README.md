@@ -172,9 +172,9 @@ Recommend based on most-played genre or artist  (recommend.c)
 
 | Person | Responsibility | Files |
 |--------|---------------|-------|
-| Person 1 | Data Structure Core | song.c, playlist.c, queue.c, stack.c, hash.c |
-| Person 2 | System Logic + API | api.c, recommend.c, cache.csv |
-| Person 3 | UI + Control + Integration | main.c, Makefile, README.md |
+| Person 1 | Data Structure Core | song.c, playlist.c, queue.c, stack.c|
+| Person 2 | System Logic + Csv file | csv.c, recommend.c, cache.csv |
+| Person 3 | UI + Control + Integration | main.c, Makefile, README.md , hash.c|
 
 ---
 
