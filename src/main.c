@@ -2,6 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef ENABLE_CORE_MODULE_MENU
+#include "../include/playlist.h"
+#include "../include/queue.h"
+#include "../include/stack.h"
+#endif
+
 /* ─── Headers จาก module อื่น (uncomment เมื่อพร้อม) ─── */
 // #include "../include/song.h"        // [คน 1] struct Song
 // #include "../include/playlist.h"    // [คน 1] linked list playlist
@@ -23,55 +29,211 @@
  * ══════════════════════════════════════════════ */
 
 /* [STUB — คน 1] playlist.c */
-void addSong(const char *title, const char *artist, const char *genre);
-void deleteSong(const char *title);
-void showPlaylist();
+void uiAddSong(const char *title, const char *artist, const char *genre);
+void uiDeleteSong(const char *title);
+void uiShowPlaylist();
 
 /* [STUB — คน 1] queue.c */
-void playNext();
+void uiPlayNext();
 
 /* [STUB — คน 1] stack.c */
-void playPrevious();
+void uiPlayPrevious();
 
 /* [STUB — คน 2] api.c หรือ CSV loader */
-void searchSong(const char *keyword);
+void uiSearchSong(const char *keyword);
 
 /* [STUB — คน 2] recommend.c */
-void showRecommendations();
+void uiShowRecommendations();
 
 /* ══════════════════════════════════════════════
  * STUB IMPLEMENTATIONS (ชั่วคราว)
  * ลบทิ้งเมื่อ link กับ .c จริงแล้ว
  * ══════════════════════════════════════════════ */
 
-void addSong(const char *title, const char *artist, const char *genre) {
+void uiAddSong(const char *title, const char *artist, const char *genre) {
     printf(YELLOW "[STUB] addSong: title='%s', artist='%s', genre='%s'\n" RESET,
            title, artist, genre);
 }
 
-void deleteSong(const char *title) {
+void uiDeleteSong(const char *title) {
     printf(YELLOW "[STUB] deleteSong: title='%s'\n" RESET, title);
 }
 
-void showPlaylist() {
+void uiShowPlaylist() {
     printf(YELLOW "[STUB] showPlaylist: (ยังไม่มีข้อมูล)\n" RESET);
 }
 
-void playNext() {
+void uiPlayNext() {
     printf(YELLOW "[STUB] playNext: เล่นเพลงถัดไป\n" RESET);
 }
 
-void playPrevious() {
+void uiPlayPrevious() {
     printf(YELLOW "[STUB] playPrevious: ย้อนกลับเพลงก่อนหน้า\n" RESET);
 }
 
-void searchSong(const char *keyword) {
+void uiSearchSong(const char *keyword) {
     printf(YELLOW "[STUB] searchSong: keyword='%s'\n" RESET, keyword);
 }
 
-void showRecommendations() {
+void uiShowRecommendations() {
     printf(YELLOW "[STUB] showRecommendations: (ยังไม่มี algorithm)\n" RESET);
 }
+
+#ifdef ENABLE_CORE_MODULE_MENU
+static void freeSongCopy(Song *song) {
+    free(song);
+}
+
+static void printPlayer(Song *nowPlaying, Queue *playQueue) {
+    Song *nextSong = peekQueue(playQueue);
+
+    printf("\n");
+    if (nowPlaying == NULL) {
+        printf("  Now Playing : -\n");
+        printf("  Duration    : -                 Shuffle: OFF\n");
+    } else {
+        printf("  Now Playing : %s - %s\n", nowPlaying->title, nowPlaying->artist);
+        printf("  Duration    : %d:%02d             Shuffle: OFF\n",
+               nowPlaying->duration / 60, nowPlaying->duration % 60);
+    }
+
+    printf("\n");
+    if (nextSong == NULL) {
+        printf("  Next Song   : -\n");
+    } else {
+        printf("  Next Song   : %s\n", nextSong->title);
+    }
+
+    printf("  -----------------------------------------\n");
+    printf("      [|<<]      [ || ]      [<>]    [>>|]\n");
+    printf("     Previous    Pause    Shuffle    Next\n");
+}
+
+static void runCoreModuleMenu(void) {
+    Song *playlist = NULL;
+    Queue playQueue;
+    Stack history;
+    Song *nowPlaying = NULL;
+    int choice, id, dur, dir;
+    char title[100], artist[100];
+    static int nextId = 1;
+
+    initQueue(&playQueue);
+    initStack(&history);
+
+    printf("\n=== Playlist Manager ===\n");
+
+    while (1) {
+        printPlayer(nowPlaying, &playQueue);
+
+        printf("\n1) Add to end        2) Add to front      3) Delete\n");
+        printf("4) Move up/down      5) Show playlist     6) Add to queue\n");
+        printf("7) Play next         8) Previous song     9) Show queue\n");
+        printf("10) Show history\n");
+        printf("0) Back to main menu\n");
+        printf("Choice: ");
+        if (scanf("%d", &choice) != 1) break;
+
+        switch (choice) {
+            case 1:
+                printf("Title: "); scanf(" %99[^\n]", title);
+                printf("Artist: "); scanf(" %99[^\n]", artist);
+                printf("Duration (seconds): "); scanf("%d", &dur);
+                playlist = addToEnd(playlist, nextId++, title, artist, dur);
+                break;
+
+            case 2:
+                printf("Title: "); scanf(" %99[^\n]", title);
+                printf("Artist: "); scanf(" %99[^\n]", artist);
+                printf("Duration (seconds): "); scanf("%d", &dur);
+                playlist = addToFront(playlist, nextId++, title, artist, dur);
+                break;
+
+            case 3:
+                printf("Song ID to delete: "); scanf("%d", &id);
+                playlist = deleteSong(playlist, id);
+                break;
+
+            case 4:
+                printf("Song ID: "); scanf("%d", &id);
+                printf("Direction (-1=up, +1=down): "); scanf("%d", &dir);
+                playlist = moveSong(playlist, id, dir);
+                break;
+
+            case 5:
+                showPlaylist(playlist);
+                break;
+
+            case 6: {
+                Song *found;
+
+                showPlaylist(playlist);
+                printf("Song ID to add to queue: ");
+                scanf("%d", &id);
+
+                found = findSongById(playlist, id);
+                if (found == NULL) {
+                    printf("[queue] Song ID %d not found.\n", id);
+                } else {
+                    enqueueSong(&playQueue, found);
+                }
+                break;
+            }
+
+            case 7: {
+                Song *next = dequeueSong(&playQueue);
+                if (next != NULL) {
+                    if (nowPlaying != NULL) {
+                        pushSong(&history, nowPlaying);
+                        freeSongCopy(nowPlaying);
+                    }
+                    nowPlaying = next;
+                    printf("[play] Now playing \"%s\" - %s\n",
+                           nowPlaying->title, nowPlaying->artist);
+                }
+                break;
+            }
+
+            case 8: {
+                Song *previous = popSong(&history);
+                if (previous != NULL) {
+                    if (nowPlaying != NULL) {
+                        enqueueSong(&playQueue, nowPlaying);
+                        freeSongCopy(nowPlaying);
+                    }
+                    nowPlaying = previous;
+                    printf("[play] Back to \"%s\" - %s\n",
+                           nowPlaying->title, nowPlaying->artist);
+                }
+                break;
+            }
+
+            case 9:
+                showQueue(&playQueue);
+                break;
+
+            case 10:
+                showStack(&history);
+                break;
+
+            case 0:
+                freeSongCopy(nowPlaying);
+                clearQueue(&playQueue);
+                clearStack(&history);
+                freePlaylist(playlist);
+                return;
+
+            default:
+                printf("Invalid choice.\n");
+        }
+    }
+
+    freeSongCopy(nowPlaying);
+    clearQueue(&playQueue);
+    clearStack(&history);
+    freePlaylist(playlist);
+}
+#endif
 
 /* ══════════════════════════════════════════════
  * UI HELPER FUNCTIONS
@@ -134,7 +296,7 @@ void handleAddSong() {
     printf("  Artist : "); readLine(artist, sizeof(artist));
     printf("  Genre  : "); readLine(genre,  sizeof(genre));
 
-    addSong(title, artist, genre);  /* → playlist.c [คน 1] */
+    uiAddSong(title, artist, genre);  /* → playlist.c [คน 1] */
 
     printf(GREEN "\n  ✓ Added: %s — %s\n" RESET, title, artist);
 }
@@ -145,7 +307,7 @@ void handleDeleteSong() {
     printf("\n── Delete Song ──\n");
     printf("  Enter title to delete: "); readLine(title, sizeof(title));
 
-    deleteSong(title);  /* → playlist.c [คน 1] */
+    uiDeleteSong(title);  /* → playlist.c [คน 1] */
 }
 
 void handleSearchSong() {
@@ -154,33 +316,38 @@ void handleSearchSong() {
     printf("\n── Search Song ──\n");
     printf("  Keyword: "); readLine(keyword, sizeof(keyword));
 
-    searchSong(keyword);  /* → hash.c [คน 1] / api.c [คน 2] */
+    uiSearchSong(keyword);  /* → hash.c [คน 1] / api.c [คน 2] */
 }
 
 void handlePlayNext() {
     printf("\n── Play Next ──\n");
-    playNext();  /* → queue.c [คน 1] */
+    uiPlayNext();  /* → queue.c [คน 1] */
 }
 
 void handlePlayPrevious() {
     printf("\n── Previous Song ──\n");
-    playPrevious();  /* → stack.c [คน 1] */
+    uiPlayPrevious();  /* → stack.c [คน 1] */
 }
 
 void handleShowPlaylist() {
     printf("\n── Playlist ──\n");
-    showPlaylist();  /* → playlist.c [คน 1] */
+    uiShowPlaylist();  /* → playlist.c [คน 1] */
 }
 
 void handleRecommendations() {
     printf("\n── Recommendations ──\n");
-    showRecommendations();  /* → recommend.c [คน 2] */
+    uiShowRecommendations();  /* → recommend.c [คน 2] */
 }
 
 void handleToggleShuffle() {
 }
 
 void handleAdminMode() {
+#ifdef ENABLE_CORE_MODULE_MENU
+    runCoreModuleMenu();
+#else
+    printf(YELLOW "[STUB] Admin mode: core playlist/queue/stack modules are not merged yet.\n" RESET);
+#endif
 }
 
 /* ══════════════════════════════════════════════
