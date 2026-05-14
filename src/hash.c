@@ -15,8 +15,14 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "../include/hash.h"
-#include "../include/song.h"
+/* Windows ไม่มี strcasecmp — ใช้ _stricmp แทน */
+#ifdef _WIN32
+    #define strcasecmp  _stricmp
+    #define strncasecmp _strnicmp
+#endif
+
+#include "hash.h"
+#include "song.h"
 
 /* ══════════════════════════════════════════════
  * HASH FUNCTION
@@ -97,6 +103,21 @@ Song *hashSearchByArtist(HashTable *ht, const char *artist) {
 }
 
 /* ══════════════════════════════════════════════
+ * HELPER: containsIgnoreCase
+ * strcasestr ไม่มีใน Windows — เขียนเองแทน
+ * ══════════════════════════════════════════════ */
+static int containsIgnoreCase(const char *haystack, const char *needle) {
+    if (!haystack || !needle) return 0;
+    char h[256], n[256];
+    size_t i;
+    for (i = 0; haystack[i] && i < 255; i++) h[i] = (char)tolower((unsigned char)haystack[i]);
+    h[i] = '\0';
+    for (i = 0; needle[i] && i < 255; i++) n[i] = (char)tolower((unsigned char)needle[i]);
+    n[i] = '\0';
+    return strstr(h, n) != NULL;
+}
+
+/* ══════════════════════════════════════════════
  * SEARCH ALL (title + artist)
  * แสดงผลทุกเพลงที่ keyword ตรงกับ title หรือ artist
  * ══════════════════════════════════════════════ */
@@ -110,8 +131,8 @@ void hashSearchAll(HashTable *ht, const char *keyword) {
         HashNode *current = ht->buckets[i];
         while (current) {
             /* ตรวจทั้ง title และ artist (case-insensitive) */
-            if (strcasestr(current->song.title,  keyword) ||
-                strcasestr(current->song.artist, keyword)) {
+            if (containsIgnoreCase(current->song.title,  keyword) ||
+                containsIgnoreCase(current->song.artist, keyword)) {
                 songPrint(&current->song, found + 1);
                 found++;
             }
