@@ -29,17 +29,6 @@ Song *playlistAddEnd(Song *head, const Song *song) {
     return head;
 }
 
-Song *playlistAddFront(Song *head, const Song *song) {
-    Song *newSong = createSong(song);
-
-    if (newSong == NULL) {
-        return head;
-    }
-
-    newSong->next = head;
-    return newSong;
-}
-
 Song *playlistDeleteById(Song *head, const char *id) {
     Song *prev;
     Song *curr;

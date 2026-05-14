@@ -4,7 +4,6 @@
 #include "song.h"
 
 Song *playlistAddEnd(Song *head, const Song *song);
-Song *playlistAddFront(Song *head, const Song *song);
 Song *playlistDeleteById(Song *head, const char *id);
 Song *playlistFindById(Song *head, const char *id);
 Song *playlistFindByTitle(Song *head, const char *title);
