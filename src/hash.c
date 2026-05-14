@@ -21,7 +21,7 @@
     #define strncasecmp _strnicmp
 #endif
 
-#include "hash.h"
+#include "../include/hash.h"
 #include "song.h"
 
 /* ══════════════════════════════════════════════
