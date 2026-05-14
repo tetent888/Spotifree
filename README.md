@@ -2,16 +2,43 @@
 
 A lightweight, terminal-based music playlist manager written in C — inspired by Spotify but running entirely in your command line.
 
+This project does not use an external music API. Instead, it stores and loads song data from local CSV files, making it easier to manage, test, and understand for a C programming project.
+
 ---
 
 ## 📋 Features
 
-- **Add / Delete Songs** — manage your playlist with a linked list
-- **Play Next / Previous** — queue and history powered by queue & stack data structures
-- **Shuffle Mode** — toggle shuffle on/off; when ON plays random song, when OFF pulls from queue in order
-- **Search Songs** — fast lookup using a hash table
-- **Recommendations** — suggests songs based on your most-played genre or artist
-- **iTunes API Integration** — fetch real song data or load from local CSV cache
+- **Add Songs** — add new songs into the local music database
+- **Delete Songs** — remove songs from the music library or playlist
+- **Show All Songs** — display all songs stored in the CSV database
+- **Search Songs** — search songs by title, artist, or genre
+- **Playlist Management** — manage user playlist using linked list logic
+- **Play Queue** — store upcoming songs using queue data structure
+- **Listening History** — keep track of played songs using stack/history logic
+- **Shuffle Mode** — toggle shuffle on/off
+- **Recommendations** — suggest songs based on recent history, artist, or genre
+- **CSV Data Storage** — load and save song, playlist, and history data using local CSV files
+
+---
+
+## 🎯 Project Goal
+
+The goal of this project is to create a small music playlist management system using C programming and data structures.
+
+Instead of focusing on real music streaming, this project focuses on how data is stored, searched, played, queued, and recommended inside a terminal-based program.
+
+This project demonstrates:
+
+- File handling in C
+- Struct usage
+- Array of structs
+- Linked list
+- Queue
+- Stack
+- Hash table
+- CSV file reading and writing
+- Basic recommendation logic
+- Modular programming using multiple `.c` and `.h` files
 
 ---
 
@@ -26,12 +53,13 @@ smart-music-playlist-manager/
 │   ├── queue.c         # Play queue (next song)          [Person 1]
 │   ├── stack.c         # History stack (previous song)   [Person 1]
 │   ├── hash.c          # Hash table for search           [Person 1]
-│   ├── api.c           # iTunes API / CSV loader         [Person 2]
+│   ├── csv.c           # iTunes API / CSV loader         [Person 2]
 │   └── recommend.c     # Recommendation algorithm        [Person 2]
 ├── include/
 │   ├── song.h
 │   ├── playlist.h
-│   ├── api.h
+│   ├── csv.h
+│   ├── recommend.h
 │   └── hash.h
 ├── data/
 │   └── cache.csv       # Local song cache
@@ -149,22 +177,57 @@ make stub
 ## 🏗️ System Flow
 
 ```
+Program starts
+        ↓
+Load songs from data/songs.csv
+        ↓
+Store song data into Song struct
+        ↓
+Insert songs into playlist / linked list / hash table
+        ↓
+Show main menu
+        ↓
+User selects an action
+        ↓
+Possible actions:
+    - Add song
+    - Delete song
+    - Search song
+    - Add song to playlist
+    - Add song to queue
+    - Play next song
+    - Show history
+    - Show recommendations
+        ↓
+Save updated data to CSV files
+        ↓
+Exit program
+
+```
+
+## 🏗️ Detailed System Flow
+
+```
 User searches "Taylor Swift"
         ↓
-Call iTunes API  (api.c)
+Read data from songs.csv
         ↓
-Parse JSON → Song struct  (song.c)
+Load each row into Song struct
         ↓
-Insert into linked list + hash table  (playlist.c / hash.c)
+Search by title / artist / genre
         ↓
-User adds to playlist / queue / history
+Display matching songs
         ↓
-Play Next →  Shuffle ON?
-             ├── YES → random song  (rand())
-             └── NO  → pull from queue  (queue.c)
+User selects a song
         ↓
-Recommend based on most-played genre or artist  (recommend.c)
-```
+Add song to playlist / queue / history
+        ↓
+Save updated data to CSV
+        ↓
+Recommendation system checks history or playlist
+        ↓
+Recommend songs with similar artist or genre
+
 
 ---
 
@@ -172,8 +235,8 @@ Recommend based on most-played genre or artist  (recommend.c)
 
 | Person | Responsibility | Files |
 |--------|---------------|-------|
-| Person 1 | Data Structure Core | song.c, playlist.c, queue.c, stack.c, hash.c |
-| Person 2 | System Logic + API | api.c, recommend.c, cache.csv |
+| Person 1 | Data Structure Core | playlist.c, queue.c, stack.c, hash.c |
+| Person 2 | System Logic + API | csv.c, song.c, recommend.c, cache.csv |
 | Person 3 | UI + Control + Integration | main.c, Makefile, README.md |
 
 ---
