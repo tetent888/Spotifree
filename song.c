@@ -1,5 +1,5 @@
 /*
- * song.c - Basic Song node function
+ * song.c - Basic Song helper functions
  */
 
 #include <stdio.h>
@@ -8,8 +8,26 @@
 
 #include "include/song.h"
 
-Song *createSong(int id, const char *title, const char *artist, int duration) {
+void songInit(Song *song, const char *id, const char *title,
+              const char *artist, const char *genre, int duration_seconds) {
+    if (song == NULL) {
+        return;
+    }
+
+    strcpy(song->id, id);
+    strcpy(song->title, title);
+    strcpy(song->artist, artist);
+    strcpy(song->genre, genre);
+    song->duration_seconds = duration_seconds;
+    song->next = NULL;
+}
+
+Song *createSong(const Song *song) {
     Song *newSong;
+
+    if (song == NULL) {
+        return NULL;
+    }
 
     newSong = (Song *)malloc(sizeof(Song));
     if (newSong == NULL) {
@@ -17,13 +35,8 @@ Song *createSong(int id, const char *title, const char *artist, int duration) {
         return NULL;
     }
 
-    newSong->id = id;
-    newSong->duration = duration;
-
-    strcpy(newSong->title, title);
-    strcpy(newSong->artist, artist);
-
-    newSong->next = NULL;
+    songInit(newSong, song->id, song->title, song->artist,
+             song->genre, song->duration_seconds);
 
     return newSong;
 }
