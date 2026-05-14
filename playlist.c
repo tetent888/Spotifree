@@ -69,6 +69,19 @@ Song *deleteSong(Song *head, int id) {
     return head;
 }
 
+Song *findSongById(Song *head, int id) {
+    Song *curr = head;
+
+    while (curr != NULL) {
+        if (curr->id == id) {
+            return curr;
+        }
+        curr = curr->next;
+    }
+
+    return NULL;
+}
+
 void showPlaylist(Song *head) {
     if (head == NULL) {
         printf("  (Playlist is empty)\n");
