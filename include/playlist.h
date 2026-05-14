@@ -8,6 +8,7 @@ Song *addToEnd(Song *head, int id, const char *title,
 Song *addToFront(Song *head, int id, const char *title,
                  const char *artist, int duration);
 Song *deleteSong(Song *head, int id);
+Song *findSongById(Song *head, int id);
 Song *moveSong(Song *head, int id, int direction);
 void showPlaylist(Song *head);
 void freePlaylist(Song *head);
