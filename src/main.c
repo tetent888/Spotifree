@@ -104,6 +104,9 @@ void printMenu() {
     printf(GREEN "  5." RESET " Previous Song\n");
     printf(GREEN "  6." RESET " Show Playlist\n");
     printf(GREEN "  7." RESET " Recommendations\n");
+    printf(GREEN "  8." RESET " Toggle Shuffle [OFF]\n");
+    printf(GREEN "  9." RESET " Admin mode\n");
+    printf("\n");
     printf(RED   "  0." RESET " Exit\n");
     printf("\n");
     printDivider();
@@ -174,6 +177,12 @@ void handleRecommendations() {
     showRecommendations();  /* → recommend.c [คน 2] */
 }
 
+void handleToggleShuffle() {
+}
+
+void handleAdminMode() {
+}
+
 /* ══════════════════════════════════════════════
  * MAIN — Program Entry Point
  * ══════════════════════════════════════════════ */
@@ -210,6 +219,8 @@ int main() {
             case 5: handlePlayPrevious();    break;
             case 6: handleShowPlaylist();    break;
             case 7: handleRecommendations(); break;
+            case 8: handleToggleShuffle();   break;
+            case 9: handleAdminMode();       break;
             case 0:
                 printf(CYAN "  Goodbye! 🎵\n" RESET);
                 /*
