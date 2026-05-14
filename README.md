@@ -16,7 +16,6 @@ This project does not use an external music API. Instead, it stores and loads so
 - **Play Queue** — store upcoming songs using queue data structure
 - **Listening History** — keep track of played songs using stack/history logic
 - **Shuffle Mode** — toggle shuffle on/off
-- **Recommendations** — suggest songs based on recent history, artist, or genre
 - **CSV Data Storage** — load and save song, playlist, and history data using local CSV files
 
 ---
@@ -25,7 +24,7 @@ This project does not use an external music API. Instead, it stores and loads so
 
 The goal of this project is to create a small music playlist management system using C programming and data structures.
 
-Instead of focusing on real music streaming, this project focuses on how data is stored, searched, played, queued, and recommended inside a terminal-based program.
+Instead of focusing on real music streaming, this project focuses on how data is stored, searched, played, queued, and shuffled inside a terminal-based program.
 
 This project demonstrates:
 
@@ -35,9 +34,8 @@ This project demonstrates:
 - Linked list
 - Queue
 - Stack
-- Hash table
 - CSV file reading and writing
-- Basic recommendation logic
+- Shuffle song selection
 - Modular programming using multiple `.c` and `.h` files
 
 ---
@@ -46,21 +44,19 @@ This project demonstrates:
 
 ```
 smart-music-playlist-manager/
-├── src/
+├── src_new/
 │   ├── main.c          # UI, menu loop, program control  [Person 3]
 │   ├── song.c          # Song struct definition          [Person 1]
 │   ├── playlist.c      # Linked list playlist            [Person 1]
 │   ├── queue.c         # Play queue (next song)          [Person 1]
 │   ├── stack.c         # History stack (previous song)   [Person 1]
-│   ├── hash.c          # Hash table for search           [Person 1]
 │   ├── csv.c           # iTunes API / CSV loader         [Person 2]
-│   └── recommend.c     # Recommendation algorithm        [Person 2]
+│   └── shuffle.c       # Shuffle song selection          [Person 2]
 ├── include/
 │   ├── song.h
 │   ├── playlist.h
 │   ├── csv.h
-│   ├── recommend.h
-│   └── hash.h
+│   └── shuffle.h
 ├── data/
 │   └── cache.csv       # Local song cache
 ├── Makefile
@@ -130,8 +126,7 @@ make stub
   4. Play Next Song
   5. Previous Song
   6. Show Playlist
-  7. Recommendations
-  8. Toggle Shuffle [OFF]
+  7. Toggle Shuffle [OFF]
   0. Exit
 
   Enter your choice:
@@ -183,7 +178,7 @@ Load songs from data/songs.csv
         ↓
 Store song data into Song struct
         ↓
-Insert songs into playlist / linked list / hash table
+Insert songs into playlist / linked list
         ↓
 Show main menu
         ↓
@@ -197,7 +192,7 @@ Possible actions:
     - Add song to queue
     - Play next song
     - Show history
-    - Show recommendations
+    - Shuffle songs
         ↓
 Save updated data to CSV files
         ↓
@@ -224,9 +219,9 @@ Add song to playlist / queue / history
         ↓
 Save updated data to CSV
         ↓
-Recommendation system checks history or playlist
+Shuffle system checks the song list
         ↓
-Recommend songs with similar artist or genre
+Pick random songs from the library
 
 
 ---
@@ -236,8 +231,8 @@ Recommend songs with similar artist or genre
 | Person | Responsibility | Files |
 |--------|---------------|-------|
 | Oak| Data Structure Core | playlist.c, queue.c, stack.c|
-| Code| System Logic + API | csv.c, song.c, recommend.c, cache.csv |
-| Pea | UI + Control + Integration | main.c, Makefile, README.md,hash.c |
+| Code| System Logic + API | csv.c, song.c, shuffle.c, cache.csv |
+| Pea | UI + Control + Integration | main.c, Makefile, README.md |
 
 ---
 
