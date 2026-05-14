@@ -233,8 +233,8 @@ Pick random songs from the library
 
 | Person | Responsibility | Files |
 |--------|---------------|-------|
-| Oak| Data Structure Core | playlist.c, queue.c, stack.c|
-| Code| System Logic + API | csv.c, song.c, shuffle.c, cache.csv |
+| Oak| Data Structure Core | playlist.c, queue.c, stack.c,song.c|
+| Code| System Logic + API | csv.c, shuffle.c, playlist.c |
 | Pea | UI + Control + Integration | main.c, Makefile, README.md |
 
 ---
