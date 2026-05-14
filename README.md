@@ -45,13 +45,13 @@ This project demonstrates:
 ```
 smart-music-playlist-manager/
 ├── src_new/
-│   ├── main.c          # UI, menu loop, program control  [Person 3]
-│   ├── song.c          # Song struct definition          [Person 1]
-│   ├── playlist.c      # Linked list playlist            [Person 1]
-│   ├── queue.c         # Play queue (next song)          [Person 1]
-│   ├── stack.c         # History stack (previous song)   [Person 1]
-│   ├── csv.c           # iTunes API / CSV loader         [Person 2]
-│   └── shuffle.c       # Shuffle song selection          [Person 2]
+│   ├── main.c          # UI, menu loop, program control  [Pea]
+│   ├── song.c          # Song struct definition          [Oak]
+│   ├── playlist.c      # Linked list playlist            [Oak]
+│   ├── queue.c         # Play queue (next song)          [Oak]
+│   ├── stack.c         # History stack (previous song)   [Oak]
+│   ├── csv.c           # iTunes API / CSV loader         [Code]
+│   └── shuffle.c       # Shuffle song selection          [Code]
 ├── include/
 │   ├── song.h
 │   ├── playlist.h
