@@ -8,6 +8,7 @@
 #include "csv.h"
 #include "playlist.h"
 #include "queue.h"
+#include "shuffle.h"
 #include "stack.h"
 
 #define CSV_FILE "data/songs.csv"
@@ -35,10 +36,10 @@ static void printPlayer(Song *nowPlaying, Queue *playQueue) {
     printf("\n");
     if (nowPlaying == NULL) {
         printf("  Now Playing : -\n");
-        printf("  Duration    : -                 Shuffle: OFF\n");
+        printf("  Duration    : -\n");
     } else {
         printf("  Now Playing : %s - %s\n", nowPlaying->title, nowPlaying->artist);
-        printf("  Duration    : %d:%02d             Shuffle: OFF\n",
+        printf("  Duration    : %d:%02d\n",
                nowPlaying->duration_seconds / 60,
                nowPlaying->duration_seconds % 60);
     }
@@ -86,6 +87,7 @@ int main(void) {
         printf("\n1) Add song          2) Delete song       3) Search song\n");
         printf("4) Show playlist     5) Add to queue      6) Play next\n");
         printf("7) Previous song     8) Show queue        9) Show history\n");
+        printf("10) Shuffle play\n");
         printf("0) Save and exit\n");
         printf("Choice: ");
         if (scanf("%d", &choice) != 1) break;
@@ -186,6 +188,31 @@ int main(void) {
             case 9:
                 stackShow(&history);
                 break;
+
+            case 10: {
+                Song shuffledSong;
+                Song *next;
+
+                if (!shufflePickSong(&shuffledSong)) {
+                    printf("Cannot shuffle. No songs found.\n");
+                    break;
+                }
+
+                next = createSong(&shuffledSong);
+                if (next == NULL) {
+                    break;
+                }
+
+                if (nowPlaying != NULL) {
+                    stackPush(&history, nowPlaying);
+                    freeSongCopy(nowPlaying);
+                }
+
+                nowPlaying = next;
+                printf("Shuffle playing: %s - %s\n",
+                       nowPlaying->title, nowPlaying->artist);
+                break;
+            }
 
             case 0:
                 savePlaylistToCsv(playlist);
