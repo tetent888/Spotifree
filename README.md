@@ -123,13 +123,16 @@ make stub
   1. Add Song
   2. Delete Song
   3. Search Song
-  4. Play Next Song
-  5. Previous Song
-  6. Show Playlist
-  7. Toggle Shuffle [OFF]
-  0. Exit
+  4. Show playlist
+  5. Add to queue
+  6. Play next
+  7. Previous song 
+  8. Show queue
+  9. Show history
+  10.Shuffle play
+  0. Save and exit
 
-  Enter your choice:
+  Choice:
 ```
 
 **Now Playing Screen:**
@@ -139,10 +142,10 @@ make stub
 
   Next Song   : Beauty and A Beat
   ─────────────────────────────────────────
-      [|◄◄]      [ ⏸ ]      [⇄]    [►►|]
+      [|◄◄]      [ ⏸ ]      [<>]    [►►|]
      Previous    Pause    Shuffle    Next
 ```
-> Press `[⇄]` to toggle shuffle — shows `Shuffle: ON` when active (random song) or `Shuffle: OFF` to pull from queue in order.
+> Press `[<>]` to toggle shuffle — shows `Shuffle: ON` when active (random song) or `Shuffle: OFF` to pull from queue in order.
 
 **Example — Adding a song:**
 ```
