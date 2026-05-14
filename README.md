@@ -235,7 +235,7 @@ Recommend songs with similar artist or genre
 
 | Person | Responsibility | Files |
 |--------|---------------|-------|
-| Oak| Data Structure Core | playlist.c, queue.c, stack.c,|
+| Oak| Data Structure Core | playlist.c, queue.c, stack.c|
 | Code| System Logic + API | csv.c, song.c, recommend.c, cache.csv |
 | Pea | UI + Control + Integration | main.c, Makefile, README.md,hash.c |
 
