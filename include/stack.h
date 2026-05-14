@@ -7,12 +7,12 @@ typedef struct Stack {
     Song *top;
 } Stack;
 
-void initStack(Stack *stack);
-int isStackEmpty(const Stack *stack);
-void pushSong(Stack *stack, const Song *song);
-Song *popSong(Stack *stack);
-Song *peekStack(const Stack *stack);
-void showStack(const Stack *stack);
-void clearStack(Stack *stack);
+void stackInit(Stack *stack);
+int stackIsEmpty(Stack *stack);
+void stackPush(Stack *stack, const Song *song);
+Song *stackPop(Stack *stack);
+Song *stackPeek(Stack *stack);
+void stackShow(Stack *stack);
+void stackClear(Stack *stack);
 
 #endif

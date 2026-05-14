@@ -8,12 +8,12 @@ typedef struct Queue {
     Song *rear;
 } Queue;
 
-void initQueue(Queue *queue);
-int isQueueEmpty(const Queue *queue);
-void enqueueSong(Queue *queue, const Song *song);
-Song *dequeueSong(Queue *queue);
-Song *peekQueue(const Queue *queue);
-void showQueue(const Queue *queue);
-void clearQueue(Queue *queue);
+void queueInit(Queue *queue);
+int queueIsEmpty(Queue *queue);
+void queueEnqueue(Queue *queue, const Song *song);
+Song *queueDequeue(Queue *queue);
+Song *queuePeek(Queue *queue);
+void queueShow(Queue *queue);
+void queueClear(Queue *queue);
 
 #endif

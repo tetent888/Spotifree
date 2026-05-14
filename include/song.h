@@ -2,13 +2,16 @@
 #define SONG_H
 
 typedef struct Song {
-    int id;
+    char id[20];
     char title[100];
     char artist[100];
-    int duration;
+    char genre[50];
+    int duration_seconds;
     struct Song *next;
 } Song;
 
-Song *createSong(int id, const char *title, const char *artist, int duration);
+void songInit(Song *song, const char *id, const char *title,
+              const char *artist, const char *genre, int duration_seconds);
+Song *createSong(const Song *song);
 
 #endif

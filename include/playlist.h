@@ -3,15 +3,15 @@
 
 #include "song.h"
 
-Song *addToEnd(Song *head, int id, const char *title,
-               const char *artist, int duration);
-Song *addToFront(Song *head, int id, const char *title,
-                 const char *artist, int duration);
-Song *deleteSong(Song *head, int id);
-Song *findSongById(Song *head, int id);
-Song *moveSong(Song *head, int id, int direction);
-void showPlaylist(Song *head);
-void freePlaylist(Song *head);
-int countSongs(Song *head);
+Song *playlistAddEnd(Song *head, const Song *song);
+Song *playlistAddFront(Song *head, const Song *song);
+Song *playlistDeleteById(Song *head, const char *id);
+Song *playlistFindById(Song *head, const char *id);
+Song *playlistFindByTitle(Song *head, const char *title);
+void playlistShow(Song *head);
+void playlistFree(Song *head);
+int playlistCount(Song *head);
+int playlistToArray(Song *head, Song songs[], int max_songs);
+Song *playlistFromArray(Song songs[], int count);
 
 #endif
