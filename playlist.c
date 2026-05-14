@@ -1,79 +1,86 @@
 /*
- * playlist.c - Linked List playlist functions
+ * playlist.c - Linked list playlist
  */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "include/playlist.h"
 
-Song *addToEnd(Song *head, int id, const char *title,
-               const char *artist, int duration) {
-    Song *newSong = createSong(id, title, artist, duration);
-    if (newSong == NULL) return head;
+Song *playlistAddEnd(Song *head, const Song *song) {
+    Song *newSong = createSong(song);
+    Song *curr;
+
+    if (newSong == NULL) {
+        return head;
+    }
 
     if (head == NULL) {
-        printf("[+] Added \"%s\" to end of playlist.\n", title);
         return newSong;
     }
 
-    Song *curr = head;
+    curr = head;
     while (curr->next != NULL) {
         curr = curr->next;
     }
     curr->next = newSong;
 
-    printf("[+] Added \"%s\" to end of playlist.\n", title);
     return head;
 }
 
-Song *addToFront(Song *head, int id, const char *title,
-                 const char *artist, int duration) {
-    Song *newSong = createSong(id, title, artist, duration);
-    if (newSong == NULL) return head;
+Song *playlistAddFront(Song *head, const Song *song) {
+    Song *newSong = createSong(song);
+
+    if (newSong == NULL) {
+        return head;
+    }
 
     newSong->next = head;
-    printf("[+] Added \"%s\" to front of playlist.\n", title);
     return newSong;
 }
 
-Song *deleteSong(Song *head, int id) {
+Song *playlistDeleteById(Song *head, const char *id) {
+    Song *prev;
+    Song *curr;
+
     if (head == NULL) {
-        printf("[-] Playlist is empty.\n");
+        printf("Playlist is empty.\n");
         return NULL;
     }
 
-    if (head->id == id) {
+    if (strcmp(head->id, id) == 0) {
         Song *temp = head;
         head = head->next;
-        printf("[-] Deleted \"%s\" from playlist.\n", temp->title);
+        printf("Deleted: %s - %s\n", temp->title, temp->artist);
         free(temp);
         return head;
     }
 
-    Song *prev = head;
-    Song *curr = head->next;
-    while (curr != NULL && curr->id != id) {
+    prev = head;
+    curr = head->next;
+    while (curr != NULL && strcmp(curr->id, id) != 0) {
         prev = curr;
         curr = curr->next;
     }
 
     if (curr == NULL) {
-        printf("[-] Song with ID %d not found.\n", id);
+        printf("Song ID %s not found.\n", id);
         return head;
     }
 
     prev->next = curr->next;
-    printf("[-] Deleted \"%s\" from playlist.\n", curr->title);
+    printf("Deleted: %s - %s\n", curr->title, curr->artist);
     free(curr);
+
     return head;
 }
 
-Song *findSongById(Song *head, int id) {
+Song *playlistFindById(Song *head, const char *id) {
     Song *curr = head;
 
     while (curr != NULL) {
-        if (curr->id == id) {
+        if (strcmp(curr->id, id) == 0) {
             return curr;
         }
         curr = curr->next;
@@ -82,102 +89,90 @@ Song *findSongById(Song *head, int id) {
     return NULL;
 }
 
-void showPlaylist(Song *head) {
+Song *playlistFindByTitle(Song *head, const char *title) {
+    Song *curr = head;
+
+    while (curr != NULL) {
+        if (strstr(curr->title, title) != NULL) {
+            return curr;
+        }
+        curr = curr->next;
+    }
+
+    return NULL;
+}
+
+void playlistShow(Song *head) {
+    Song *curr = head;
+    int number = 1;
+    int total = 0;
+
     if (head == NULL) {
-        printf("  (Playlist is empty)\n");
+        printf("(Playlist is empty)\n");
         return;
     }
 
-    int total = 0;
-    int pos = 1;
-    Song *curr = head;
-
-    printf("\n==================== MY PLAYLIST ====================\n");
-    printf("#  %-32s  Duration\n", "Title - Artist");
-    printf("-----------------------------------------------------\n");
+    printf("\n==================== PLAYLIST ====================\n");
+    printf("%-4s %-8s %-22s %-18s %-12s %-8s\n",
+           "No.", "ID", "Title", "Artist", "Genre", "Time");
+    printf("--------------------------------------------------\n");
 
     while (curr != NULL) {
-        int min = curr->duration / 60;
-        int sec = curr->duration % 60;
-        char display[210];
+        printf("%-4d %-8s %-22.22s %-18.18s %-12.12s %d:%02d\n",
+               number, curr->id, curr->title, curr->artist, curr->genre,
+               curr->duration_seconds / 60, curr->duration_seconds % 60);
 
-        snprintf(display, sizeof(display), "%s - %s", curr->title, curr->artist);
-        printf("%-2d %-32.32s  %3d:%02d  (id=%d)\n",
-               pos, display, min, sec, curr->id);
-
-        total += curr->duration;
+        total += curr->duration_seconds;
         curr = curr->next;
-        pos++;
+        number++;
     }
 
-    printf("-----------------------------------------------------\n");
-    printf("Total: %d songs | %d:%02d total duration\n\n",
-           pos - 1, total / 60, total % 60);
+    printf("--------------------------------------------------\n");
+    printf("Total: %d songs | %d:%02d\n\n",
+           number - 1, total / 60, total % 60);
 }
 
-Song *moveSong(Song *head, int id, int direction) {
-    if (head == NULL || head->next == NULL) return head;
-
-    Song *prev2 = NULL;
-    Song *prev = NULL;
+void playlistFree(Song *head) {
     Song *curr = head;
 
-    while (curr != NULL && curr->id != id) {
-        prev2 = prev;
-        prev = curr;
-        curr = curr->next;
-    }
-
-    if (curr == NULL) {
-        printf("[!] Song ID %d not found.\n", id);
-        return head;
-    }
-
-    if (direction == -1) {
-        if (prev == NULL) {
-            printf("[!] Song is already at the top.\n");
-            return head;
-        }
-
-        if (prev2 != NULL) prev2->next = curr;
-        else head = curr;
-
-        prev->next = curr->next;
-        curr->next = prev;
-        printf("[up] Moved \"%s\" up.\n", curr->title);
-    } else {
-        Song *next = curr->next;
-        if (next == NULL) {
-            printf("[!] Song is already at the bottom.\n");
-            return head;
-        }
-
-        if (prev != NULL) prev->next = next;
-        else head = next;
-
-        curr->next = next->next;
-        next->next = curr;
-        printf("[down] Moved \"%s\" down.\n", curr->title);
-    }
-
-    return head;
-}
-
-void freePlaylist(Song *head) {
-    Song *curr = head;
     while (curr != NULL) {
         Song *temp = curr;
         curr = curr->next;
         free(temp);
     }
-    printf("[*] Playlist cleared from memory.\n");
 }
 
-int countSongs(Song *head) {
+int playlistCount(Song *head) {
     int count = 0;
+
     while (head != NULL) {
         count++;
         head = head->next;
     }
+
     return count;
+}
+
+int playlistToArray(Song *head, Song songs[], int max_songs) {
+    int count = 0;
+
+    while (head != NULL && count < max_songs) {
+        songInit(&songs[count], head->id, head->title, head->artist,
+                 head->genre, head->duration_seconds);
+        head = head->next;
+        count++;
+    }
+
+    return count;
+}
+
+Song *playlistFromArray(Song songs[], int count) {
+    Song *head = NULL;
+    int i;
+
+    for (i = 0; i < count; i++) {
+        head = playlistAddEnd(head, &songs[i]);
+    }
+
+    return head;
 }
